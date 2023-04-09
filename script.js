@@ -8,19 +8,28 @@ const output = document.querySelector('.output');
 const numbers = document.querySelector('.numbers');
 const operators = document.querySelector('.operators');
 const equals = document.querySelector('.equals');
+const clear = document.querySelector('.clear');
 
 numbers.onclick = (e) => getNum(e.target);
 operators.onclick = (e) => getOperator(e.target);
+clear.onclick = () => clearCalculator();
+equals.onclick = () => getResult();
 
 // clicking '=' will return the answer as the currentNum, as long both numbers and an operator have been selected //
 // we will also reset the previousNum variable so we can perform a new operation //
-equals.onclick = () => {
+function getResult() {
     if (currentNum != "" && previousNum != "" && operator != "") {
         output.textContent = operate(+currentNum, +previousNum, operator);
         previousNum = "";
     }
 }
 
+function clearCalculator() {
+    output.textContent = "0";
+    currentNum = "";
+    previousNum = "";
+    operator = "";
+}
 
 // input the first number and store it in a variable and display it on the screen //
 function getNum(event) {
