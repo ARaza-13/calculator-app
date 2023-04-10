@@ -5,15 +5,19 @@ let operator = "";
 
 // populate the display of the calculator when a number button is clicked //
 const output = document.querySelector('.output');
-const numbers = document.querySelector('.numbers');
-const operators = document.querySelector('.operators');
+const numbers = document.querySelectorAll('.number');
+const operators = document.querySelectorAll('.operator');
 const equals = document.querySelector('.equals');
 const clear = document.querySelector('.clear');
+const backspace = document.querySelector('.delete');
 
-numbers.onclick = (e) => getNum(e.target);
-operators.onclick = (e) => getOperator(e.target);
+numbers.forEach((number) => 
+    number.onclick = (e) => getNum(e.target));
+operators.forEach((operator) =>
+    operator.onclick = (e) => getOperator(e.target));
 clear.onclick = () => clearCalculator();
 equals.onclick = () => getResult();
+backspace.onclick = () => deleteNum();
 
 // clicking '=' will return the answer as the currentNum, as long both numbers and an operator have been selected //
 // we will also reset the previousNum variable so we can perform a new operation //
@@ -24,11 +28,20 @@ function getResult() {
     }
 }
 
-function clearCalculator() {
+function clearCalculator() { 
     output.textContent = "0";
     currentNum = "";
     previousNum = "";
     operator = "";
+}
+
+// can delete numbers from the current number //
+function deleteNum() {
+    currentNum = currentNum.toString();
+    if (currentNum.length > 0) {
+        currentNum = currentNum.slice(0, -1);
+        output.textContent = currentNum;
+    }
 }
 
 // input the first number and store it in a variable and display it on the screen //
@@ -62,8 +75,13 @@ function operate(num1, num2, operator) {
         currentNum = multiply(num1, num2);
         return currentNum;
     } else if (operator == "/") {
-        currentNum = divide(num1, num2);
-        return currentNum;
+        if (num1 == 0) {
+            alert("Can't Divide by 0");
+            clearCalculator();
+        } else {
+            currentNum = divide(num1, num2);
+            return currentNum;
+        }
     }
 }
 
