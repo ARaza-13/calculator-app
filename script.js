@@ -7,6 +7,7 @@ let operator = "";
 const output = document.querySelector('.output');
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
+const decimal = document.querySelector('.decimal');
 const equals = document.querySelector('.equals');
 const clear = document.querySelector('.clear');
 const backspace = document.querySelector('.delete');
@@ -15,6 +16,7 @@ numbers.forEach((number) =>
     number.onclick = (e) => getNum(e.target));
 operators.forEach((operator) =>
     operator.onclick = (e) => getOperator(e.target));
+decimal.onclick = () => addDecimal();
 clear.onclick = () => clearCalculator();
 equals.onclick = () => getResult();
 backspace.onclick = () => deleteNum();
@@ -40,6 +42,14 @@ function deleteNum() {
     currentNum = currentNum.toString();
     if (currentNum.length > 0) {
         currentNum = currentNum.slice(0, -1);
+        output.textContent = currentNum;
+    }
+}
+
+// add a decimal to the current number only once per operand //
+function addDecimal() {
+    if (!currentNum.includes(".")) {
+        currentNum += "."
         output.textContent = currentNum;
     }
 }
