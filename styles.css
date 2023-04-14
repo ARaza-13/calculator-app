@@ -24,13 +24,18 @@
     margin-top: 36px;
 }
 
-.output {
+.screen {
     font-size: 48px;
     color: aliceblue;
     padding: 24px;
-    height: 100px;
+    min-height: 150px;
     text-align: end;
-    margin-bottom: 20px;
+    word-wrap: break-word; /* number will not overflow screen */
+}
+
+.previous-output {
+    font-size: 24px;
+    margin-bottom: 8px;
 }
 
 /* style and position the buttons */
@@ -47,6 +52,13 @@ button {
     border: 0px solid transparent;
     border-radius: 100%;
     background-color: #d4d4d2;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    transition-timing-function: ease;
+}
+
+button:active {
+    background-color: #878686;
 }
 
 .number {
@@ -57,6 +69,11 @@ button {
 .operator {
     background-color: #ff9500;
     color: aliceblue;
+}
+
+.operator:focus {
+    background-color: aliceblue;
+    color: #ff9500;
 }
 
 .zero {

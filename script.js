@@ -4,10 +4,12 @@ let previousNum = "";
 let operator = "";
 
 // populate the display of the calculator when a number button is clicked //
-const output = document.querySelector('.output');
+const currentOutput = document.querySelector('.current-output');
+const previousOutput = document.querySelector('.previous-output');
 const numbers = document.querySelectorAll('.number');
 const operators = document.querySelectorAll('.operator');
 const decimal = document.querySelector('.decimal');
+const negative = document.querySelector('.negative');
 const equals = document.querySelector('.equals');
 const clear = document.querySelector('.clear');
 const backspace = document.querySelector('.delete');
@@ -17,6 +19,7 @@ numbers.forEach((number) =>
 operators.forEach((operator) =>
     operator.onclick = (e) => getOperator(e.target));
 decimal.onclick = () => addDecimal();
+negative.onclick = () => addNegative();
 clear.onclick = () => clearCalculator();
 equals.onclick = () => getResult();
 backspace.onclick = () => deleteNum();
@@ -25,16 +28,23 @@ backspace.onclick = () => deleteNum();
 // we will also reset the previousNum variable so we can perform a new operation //
 function getResult() {
     if (currentNum != "" && previousNum != "" && operator != "") {
-        output.textContent = operate(+currentNum, +previousNum, operator);
+        previousOutput.textContent = `${previousNum} ${operator} ${currentNum} =`;
+        currentOutput.textContent = operate(+currentNum, +previousNum, operator);
         previousNum = "";
     }
 }
 
 function clearCalculator() { 
-    output.textContent = "0";
+    currentOutput.textContent = "0";
+    previousOutput.textContent = "";
     currentNum = "";
     previousNum = "";
     operator = "";
+}
+
+// round the number if it's too big so that it won't overflow the display //
+function roundNum(num) {
+    return Math.round(num * 1000) / 1000;
 }
 
 // can delete numbers from the current number //
@@ -42,7 +52,7 @@ function deleteNum() {
     currentNum = currentNum.toString();
     if (currentNum.length > 0) {
         currentNum = currentNum.slice(0, -1);
-        output.textContent = currentNum;
+        currentOutput.textContent = currentNum;
     }
 }
 
@@ -50,14 +60,26 @@ function deleteNum() {
 function addDecimal() {
     if (!currentNum.includes(".")) {
         currentNum += "."
-        output.textContent = currentNum;
+        currentOutput.textContent = currentNum;
+    }
+}
+
+// make the number negative or positive //
+function addNegative() {
+    currentNum = currentNum.toString();
+    if (!currentNum.includes("-")) {
+        currentNum = "-" + currentNum;
+        currentOutput.textContent = currentNum;
+    } else {
+        currentNum = currentNum.replace('-','');
+        currentOutput.textContent = currentNum;
     }
 }
 
 // input the first number and store it in a variable and display it on the screen //
 function getNum(event) {
     currentNum += event.textContent;
-    output.textContent = currentNum;
+    currentOutput.textContent = currentNum;
 }
 
 // once we select an operator, we assign the current number as the previous number so that we can select a new current number //
@@ -65,11 +87,12 @@ function getNum(event) {
 // as well as ensure that we're not evaluating more than a single pair of numbers at a time //
 function getOperator(event) {
     if (currentNum != "" && previousNum != "") {
-        output.textContent = operate(+currentNum, +previousNum, operator)
+        currentOutput.textContent = operate(+currentNum, +previousNum, operator)
     } 
     operator = event.textContent;
     previousNum = currentNum;
     currentNum = ""; 
+    previousOutput.textContent = `${previousNum} ${operator}`;
 }
 
 
@@ -77,22 +100,20 @@ function getOperator(event) {
 function operate(num1, num2, operator) {
     if (operator == "+") {
         currentNum = add(num1, num2);
-        return currentNum;
     } else if (operator == "-") {
         currentNum = subtract(num1, num2);
-        return currentNum;
     } else if (operator == "x") {
         currentNum = multiply(num1, num2);
-        return currentNum;
     } else if (operator == "/") {
         if (num1 == 0) {
             alert("Can't Divide by 0");
             clearCalculator();
+            return
         } else {
             currentNum = divide(num1, num2);
-            return currentNum;
         }
     }
+    return roundNum(currentNum);
 }
 
 // returns the respective sum, difference, product, and quotient //
